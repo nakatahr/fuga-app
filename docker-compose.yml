@@ -23,10 +23,11 @@ services:
             - sail
         depends_on:
             - mysql
-            - redis
+            - phpmyadmin
+            # - redis
             - meilisearch
             - mailpit
-            - selenium
+            # - selenium
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -51,6 +52,18 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql:mysql
+        ports:
+            - 8888:80
+        environment:
+            PMA_HOST: mysql
+            MYSQL_USERNAME: '${DB_USERNAME}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+        networks:
+            - sail
     redis:
         image: 'redis:alpine'
         ports:
